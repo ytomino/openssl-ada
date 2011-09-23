@@ -14,12 +14,12 @@ endif
 
 CFLAGS=-gnata -gnatwa -gnatyy-3chbs
 
-.PHONY: all clean $(BUILDDIR)/test_md5
+.PHONY: all clean
 
-all: $(BUILDDIR)/test_md5
+all: $(BUILDDIR)/test_md5 $(BUILDDIR)/test_sha1
 
-$(BUILDDIR)/test_md5: test_md5.adb $(BUILDDIR) $(IMPORTDIR)
-	cd $(BUILDDIR) && gnatmake -g $(MFLAGS) -I../$(SOURCEDIR) -I../$(IMPORTDIR) $(CFLAGS) ../$< $(LFLAGS)
+$(BUILDDIR)/%: %.adb $(BUILDDIR) $(IMPORTDIR) $(wildcard $(SOURCEDIR)/*)
+	cd $(BUILDDIR) && gnatmake -g $(MFLAGS) -I../$(SOURCEDIR) -I../$(IMPORTDIR) $(CFLAGS) ../$< -largs $(LFLAGS)
 
 $(BUILDDIR):
 	mkdir $(BUILDDIR)

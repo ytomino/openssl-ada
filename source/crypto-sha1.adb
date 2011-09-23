@@ -1,24 +1,24 @@
 with Ada.Unchecked_Conversion;
 with System;
-package body Crypto.MD5 is
+package body Crypto.SHA1 is
 	use type C.signed_int;
 	
 	function Initial return Context is
 	begin
 		return Result : aliased Context do
-			if MD5_Init (Result'Access) = 0 then
+			if SHA1_Init (Result'Access) = 0 then
 				raise Program_Error;
 			end if;
 		end return;
 	end Initial;
 	
 	procedure Update (
-		Context : in out MD5.Context;
+		Context : in out SHA1.Context;
 		Data : in Ada.Streams.Stream_Element_Array)
 	is
 		pragma Suppress (Index_Check);
 	begin
-		if MD5_Update (
+		if SHA1_Update (
 			Context'Unrestricted_Access,
 			C.void_const_ptr (Data (Data'First)'Address),
 			Data'Length) = 0
@@ -28,12 +28,12 @@ package body Crypto.MD5 is
 	end Update;
 	
 	procedure Update (
-		Context : in out MD5.Context;
+		Context : in out SHA1.Context;
 		Data : in String)
 	is
 		pragma Suppress (Index_Check);
 	begin
-		if MD5_Update (
+		if SHA1_Update (
 			Context'Unrestricted_Access,
 			C.void_const_ptr (Data (Data'First)'Address),
 			Data'Length) = 0
@@ -42,11 +42,11 @@ package body Crypto.MD5 is
 		end if;
 	end Update;
 	
-	procedure Final (Context : in out MD5.Context; Digest : out Fingerprint) is
+	procedure Final (Context : in out SHA1.Context; Digest : out Fingerprint) is
 		function To_Pointer is
 			new Ada.Unchecked_Conversion (System.Address, C.unsigned_char_ptr);
 	begin
-		if MD5_Final (
+		if SHA1_Final (
 			To_Pointer (Digest (Digest'First)'Address),
 			Context'Unrestricted_Access) = 0
 		then
@@ -68,4 +68,4 @@ package body Crypto.MD5 is
 		end return;
 	end Image;
 	
-end Crypto.MD5;
+end Crypto.SHA1;
