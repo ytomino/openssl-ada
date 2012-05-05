@@ -5,8 +5,8 @@ package body Crypto.SHA1 is
 	
 	function Initial return Context is
 	begin
-		return Result : aliased Context do
-			if SHA1_Init (Result'Access) = 0 then
+		return Result : Context do
+			if SHA1_Init (Result'Unrestricted_Access) = 0 then
 				raise Program_Error;
 			end if;
 		end return;
