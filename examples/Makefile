@@ -18,9 +18,10 @@ endif
 GFLAGS=
 GFLAGS_ALL=
 CFLAGS=
-CFLAGS_ALL=-ggdb -pipe -gnata -gnatef -gnatwa -gnatyy-3chbs
+CFLAGS_ALL=-ggdb -pipe -gnata -gnatef -gnatwa -gnatyy-3chbs \
+	$(addprefix -gnatec=,$(abspath $(wildcard *.adc)))
 MFLAGS=
-MFLAGS_ALL=-C -D $(BUILDDIR) -I../source
+MFLAGS_ALL=-C -D $(BUILDDIR) -I../source -gnatA
 BFLAGS=
 BFLAGS_ALL=-E
 LFLAGS=
