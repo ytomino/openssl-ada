@@ -49,7 +49,7 @@ EXAMPLES=$(basename $(filter-out b~%,$(wildcard *.adb)))
 
 .PHONY: all clean $(EXAMPLES)
 
-all: $(BUILDDIR)/test_md5 $(BUILDDIR)/test_sha1
+all: $(EXAMPLES)
 
 $(BUILDDIR)/%: %.adb $(IMPORTDIR) $(wildcard ../source/*) | $(BUILDDIR)
 	$(GNATPREFIX)gnatmake -c $< $(GFLAGS_ALL) $(MFLAGS_ALL) -cargs $(CFLAGS_ALL)
