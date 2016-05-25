@@ -6,7 +6,7 @@ package body Crypto.SHA1 is
 	function Initial return Context is
 	begin
 		return Result : Context do
-			if SHA1_Init (Result'Unrestricted_Access) = 0 then
+			if C.openssl.sha.SHA1_Init (Result.SHA'Access) = 0 then
 				raise Program_Error;
 			end if;
 		end return;
@@ -18,8 +18,8 @@ package body Crypto.SHA1 is
 	is
 		pragma Suppress (Index_Check);
 	begin
-		if SHA1_Update (
-			Context'Unrestricted_Access,
+		if C.openssl.sha.SHA1_Update (
+			Context.SHA'Access,
 			C.void_const_ptr (Data (Data'First)'Address),
 			Data'Length) = 0
 		then
@@ -33,8 +33,8 @@ package body Crypto.SHA1 is
 	is
 		pragma Suppress (Index_Check);
 	begin
-		if SHA1_Update (
-			Context'Unrestricted_Access,
+		if C.openssl.sha.SHA1_Update (
+			Context.SHA'Access,
 			C.void_const_ptr (Data (Data'First)'Address),
 			Data'Length) = 0
 		then
@@ -46,9 +46,9 @@ package body Crypto.SHA1 is
 		function To_Pointer is
 			new Ada.Unchecked_Conversion (System.Address, C.unsigned_char_ptr);
 	begin
-		if SHA1_Final (
+		if C.openssl.sha.SHA1_Final (
 			To_Pointer (Digest (Digest'First)'Address),
-			Context'Unrestricted_Access) = 0
+			Context.SHA'Access) = 0
 		then
 			raise Program_Error;
 		end if;

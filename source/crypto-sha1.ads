@@ -24,7 +24,10 @@ package Crypto.SHA1 is
 	
 private
 	
-	type Context is new C.openssl.sha.SHA_CTX;
+	type Context is record
+		SHA : aliased C.openssl.sha.SHA_CTX;
+	end record;
+	pragma Suppress_Initialization (Context);
 	
 	pragma Compile_Time_Error (
 		Fingerprint'Length /= C.openssl.sha.SHA_DIGEST_LENGTH,

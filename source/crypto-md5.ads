@@ -24,7 +24,10 @@ package Crypto.MD5 is
 	
 private
 	
-	type Context is new C.openssl.md5.MD5_CTX;
+	type Context is record
+		MD5 : aliased C.openssl.md5.MD5_CTX;
+	end record;
+	pragma Suppress_Initialization (Context);
 	
 	pragma Compile_Time_Error (
 		Fingerprint'Length /= C.openssl.md5.MD5_DIGEST_LENGTH,

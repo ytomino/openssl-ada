@@ -6,7 +6,7 @@ package body Crypto.MD5 is
 	function Initial return Context is
 	begin
 		return Result : Context do
-			if MD5_Init (Result'Unrestricted_Access) = 0 then
+			if C.openssl.md5.MD5_Init (Result.MD5'Access) = 0 then
 				raise Program_Error;
 			end if;
 		end return;
@@ -18,8 +18,8 @@ package body Crypto.MD5 is
 	is
 		pragma Suppress (Index_Check);
 	begin
-		if MD5_Update (
-			Context'Unrestricted_Access,
+		if C.openssl.md5.MD5_Update (
+			Context.MD5'Access,
 			C.void_const_ptr (Data (Data'First)'Address),
 			Data'Length) = 0
 		then
@@ -33,8 +33,8 @@ package body Crypto.MD5 is
 	is
 		pragma Suppress (Index_Check);
 	begin
-		if MD5_Update (
-			Context'Unrestricted_Access,
+		if C.openssl.md5.MD5_Update (
+			Context.MD5'Access,
 			C.void_const_ptr (Data (Data'First)'Address),
 			Data'Length) = 0
 		then
@@ -46,9 +46,9 @@ package body Crypto.MD5 is
 		function To_Pointer is
 			new Ada.Unchecked_Conversion (System.Address, C.unsigned_char_ptr);
 	begin
-		if MD5_Final (
+		if C.openssl.md5.MD5_Final (
 			To_Pointer (Digest (Digest'First)'Address),
-			Context'Unrestricted_Access) = 0
+			Context.MD5'Access) = 0
 		then
 			raise Program_Error;
 		end if;
