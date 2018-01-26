@@ -1,13 +1,12 @@
-HOST=$(shell gcc -dumpmachine)
+HOST:=$(shell gcc -dumpmachine)
 TARGET=$(HOST)
-
-VERSION=$(shell gcc -dumpversion)
 
 BUILDDIR=$(TARGET).build
 
 ifeq ($(TARGET),$(HOST))
 GNATPREFIX=
-GCC=$(dir $(shell which gnatmake))gcc
+GNATMAKE:=$(shell which gnatmake)
+GCC=$(dir $(GNATMAKE))gcc
 BINLN=bin
 else
 GNATPREFIX=$(TARGET)-
@@ -28,6 +27,7 @@ LFLAGS=
 LFLAGS_ALL=-ggdb
 
 ifneq ($(DRAKE_RTSROOT),)
+VERSION:=$(shell gcc -dumpversion)
 DRAKE_RTSDIR=$(DRAKE_RTSROOT)/$(TARGET)/$(VERSION)
 endif
 ifneq ($(DRAKE_RTSDIR),)
