@@ -4,15 +4,14 @@ TARGET=$(HOST)
 BUILDDIR=$(TARGET).build
 
 ifeq ($(TARGET),$(HOST))
-GNATPREFIX=
-GNATMAKE:=$(shell which gnatmake)
-GCC=$(dir $(GNATMAKE))gcc
+GCCPREFIX=
 BINLN=bin
 else
-GNATPREFIX=$(TARGET)-
-GCC=$(TARGET)-gcc
+GCCPREFIX=$(TARGET)-
 BINLN=
 endif
+GCCSUFFIX=
+GCC=$(GCCPREFIX)gcc$(GCCSUFFIX)
 
 GFLAGS=
 GFLAGS_ALL=
@@ -27,7 +26,7 @@ LFLAGS=
 LFLAGS_ALL=-ggdb
 
 ifneq ($(DRAKE_RTSROOT),)
-VERSION:=$(shell gcc -dumpversion)
+VERSION:=$(shell $(GCC) -dumpversion)
 DRAKE_RTSDIR=$(DRAKE_RTSROOT)/$(TARGET)/$(VERSION)
 endif
 ifneq ($(DRAKE_RTSDIR),)
@@ -36,6 +35,13 @@ GFLAGS_ALL+=--RTS=$(abspath $(DRAKE_RTSDIR))
 else
 IMPORTDIR=$(BUILDDIR)/import
 MFLAGS_ALL+=-I$(IMPORTDIR)
+endif
+
+ifneq ($(GCC),gcc)
+GFLAGS_ALL+=$(filter -m32 -m64,$(GCC))
+MFLAGS_ALL+=--GCC="$(GCC)"
+LFLAGS_ALL+=--GCC="$(GCC)"
+HFLAGS+=-gcc="$(GCC)"
 endif
 
 GFLAGS_ALL:=$(strip $(GFLAGS_ALL) $(GFLAGS))
@@ -52,9 +58,9 @@ EXAMPLES=$(basename $(filter-out b~%,$(wildcard *.adb)))
 all: $(EXAMPLES)
 
 $(BUILDDIR)/%: %.adb $(IMPORTDIR) $(wildcard ../source/*) | $(BUILDDIR)
-	$(GNATPREFIX)gnatmake -c $< $(GFLAGS_ALL) $(MFLAGS_ALL) -cargs $(CFLAGS_ALL)
-	cd $(BUILDDIR) && $(GNATPREFIX)gnatbind $(basename $(notdir $<)).ali $(GFLAGS_ALL) $(BFLAGS_ALL)
-	cd $(BUILDDIR) && $(GNATPREFIX)gnatlink -o ../$@ $(basename $(notdir $<)).ali $(GFLAGS_ALL) $(LFLAGS_ALL)
+	$(GCCPREFIX)gnatmake$(GCCSUFFIX) -c $< $(GFLAGS_ALL) $(MFLAGS_ALL) -cargs $(CFLAGS_ALL)
+	cd $(BUILDDIR) && $(GCCPREFIX)gnatbind$(GCCSUFFIX) $(basename $(notdir $<)).ali $(GFLAGS_ALL) $(BFLAGS_ALL)
+	cd $(BUILDDIR) && $(GCCPREFIX)gnatlink$(GCCSUFFIX) -o ../$@ $(basename $(notdir $<)).ali $(GFLAGS_ALL) $(LFLAGS_ALL)
 
 $(BUILDDIR):
 	mkdir $(BUILDDIR)
@@ -66,7 +72,7 @@ $(EXAMPLES): %: $(BUILDDIR)/% $(BINLN)
 
 ifeq ($(IMPORTDIR),$(BUILDDIR)/import)
 $(IMPORTDIR): ../source/import.h | $(BUILDDIR)
-	headmaster --to ada -gcc=$(GCC) $(addprefix -isystem ,$(INCDIR)) -p -D $(IMPORTDIR) $+
+	headmaster --to ada $(addprefix -isystem ,$(INCDIR)) $(HFLAGS) -p -D $(IMPORTDIR) $+
 endif
 
 clean:
