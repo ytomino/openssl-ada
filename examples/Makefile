@@ -1,3 +1,5 @@
+SOURCEDIR=../source
+
 HOST:=$(shell gcc -dumpmachine)
 TARGET=$(HOST)
 
@@ -19,7 +21,7 @@ CFLAGS=
 CFLAGS_ALL=-ggdb -pipe -gnata -gnatef -gnatwa -gnatyy-3chbs \
 	$(addprefix -gnatec=,$(abspath $(wildcard *.adc)))
 MFLAGS=
-MFLAGS_ALL=-C -D $(BUILDDIR) -I../source -gnatA
+MFLAGS_ALL=-C -D $(BUILDDIR) -gnatA
 BFLAGS=
 BFLAGS_ALL=-E
 LFLAGS=
@@ -57,8 +59,8 @@ EXAMPLES=$(basename $(filter-out b~%,$(wildcard *.adb)))
 
 all: $(EXAMPLES)
 
-$(BUILDDIR)/%: %.adb $(IMPORTDIR) $(wildcard ../source/*) | $(BUILDDIR)
-	$(GCCPREFIX)gnatmake$(GCCSUFFIX) -c $< $(GFLAGS_ALL) $(MFLAGS_ALL) -cargs $(CFLAGS_ALL)
+$(BUILDDIR)/%: %.adb $(IMPORTDIR) $(wildcard $(SOURCEDIR)/*) | $(BUILDDIR)
+	$(GCCPREFIX)gnatmake$(GCCSUFFIX) -c -I$(SOURCEDIR) $< $(GFLAGS_ALL) $(MFLAGS_ALL) -cargs $(CFLAGS_ALL)
 	cd $(BUILDDIR) && $(GCCPREFIX)gnatbind$(GCCSUFFIX) $(basename $(notdir $<)).ali $(GFLAGS_ALL) $(BFLAGS_ALL)
 	cd $(BUILDDIR) && $(GCCPREFIX)gnatlink$(GCCSUFFIX) -o ../$@ $(basename $(notdir $<)).ali $(GFLAGS_ALL) $(LFLAGS_ALL)
 
@@ -71,7 +73,7 @@ $(BINLN): | $(BUILDDIR)
 $(EXAMPLES): %: $(BUILDDIR)/% $(BINLN)
 
 ifeq ($(IMPORTDIR),$(BUILDDIR)/import)
-$(IMPORTDIR): ../source/import.h | $(BUILDDIR)
+$(IMPORTDIR): $(SOURCEDIR)/import.h | $(BUILDDIR)
 	headmaster --to ada $(addprefix -isystem ,$(INCDIR)) $(HFLAGS) -p -D $(IMPORTDIR) $+
 endif
 
