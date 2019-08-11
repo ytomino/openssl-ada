@@ -54,16 +54,16 @@ $(BUILDDIR)/%: %.adb $(IMPORTDIR) $(wildcard $(SOURCEDIR)/*) | $(BUILDDIR)
 	cd $(BUILDDIR) && $(GCCPREFIX)gnatlink$(GCCSUFFIX) -o ../$@ $(basename $(notdir $<)).ali $(GFLAGS) $(LFLAGS)
 
 $(BUILDDIR):
-	mkdir $(BUILDDIR)
+	mkdir $@
 
 $(BINLN): | $(BUILDDIR)
-	ln -s $(BUILDDIR) $(BINLN)
+	ln -s $(BUILDDIR) $@
 
 $(EXAMPLES): %: $(BUILDDIR)/% $(BINLN)
 
 ifeq ($(IMPORTDIR),$(BUILDDIR)/import)
 $(IMPORTDIR): $(SOURCEDIR)/import.h | $(BUILDDIR)
-	headmaster --to ada $(HFLAGS) -p -D $(IMPORTDIR) $+
+	headmaster --to ada $(HFLAGS) -p -D $@ $+
 	touch $@
 endif
 
