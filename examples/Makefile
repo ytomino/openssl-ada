@@ -16,16 +16,12 @@ GCCSUFFIX=
 GCC=$(GCCPREFIX)gcc$(GCCSUFFIX)
 
 GFLAGS=
-GFLAGS_ALL=
-CFLAGS=
-CFLAGS_ALL=-ggdb -pipe -gnata -gnatef -gnatwa -gnatyy-3chbs \
+CFLAGS=-ggdb -pipe -gnata -gnatef -gnatwa -gnatyy-3chbs \
 	$(addprefix -gnatec=,$(abspath $(wildcard *.adc)))
-MFLAGS=
-MFLAGS_ALL=-C -D $(BUILDDIR) -gnatA
-BFLAGS=
-BFLAGS_ALL=-E
-LFLAGS=
-LFLAGS_ALL=-ggdb
+MFLAGS=-C -D $(BUILDDIR) -gnatA
+BFLAGS=-E
+LFLAGS=-ggdb
+HFLAGS=
 
 ifneq ($(DRAKE_RTSROOT),)
 VERSION:=$(shell $(GCC) -dumpversion)
@@ -33,25 +29,18 @@ DRAKE_RTSDIR=$(DRAKE_RTSROOT)/$(TARGET)/$(VERSION)
 endif
 ifneq ($(DRAKE_RTSDIR),)
 IMPORTDIR=
-GFLAGS_ALL+=--RTS=$(abspath $(DRAKE_RTSDIR))
+GFLAGS+=--RTS=$(abspath $(DRAKE_RTSDIR))
 else
 IMPORTDIR=$(BUILDDIR)/import
-MFLAGS_ALL+=-I$(IMPORTDIR)
+MFLAGS+=-I$(IMPORTDIR)
 endif
 
 ifneq ($(GCC),gcc)
-GFLAGS_ALL+=$(filter -m32 -m64,$(GCC))
-MFLAGS_ALL+=--GCC="$(GCC)"
-LFLAGS_ALL+=--GCC="$(GCC)"
+GFLAGS+=$(filter -m32 -m64,$(GCC))
+MFLAGS+=--GCC="$(GCC)"
+LFLAGS+=--GCC="$(GCC)"
 HFLAGS+=-gcc="$(GCC)"
 endif
-
-GFLAGS_ALL:=$(strip $(GFLAGS_ALL) $(GFLAGS))
-CFLAGS_ALL:=$(strip $(CFLAGS_ALL) $(CFLAGS))
-MFLAGS_ALL:=$(strip $(MFLAGS_ALL) $(MFLAGS))
-BFLAGS_ALL:=$(strip $(BFLAGS_ALL) $(BFLAGS))
-LFLAGS_ALL:=$(strip $(LFLAGS_ALL) $(LFLAGS))
-FFLAGS_ALL:=$(strip $(FFLAGS_ALL) $(FFLAGS))
 
 EXAMPLES=$(basename $(filter-out b~%,$(wildcard *.adb)))
 
@@ -60,9 +49,9 @@ EXAMPLES=$(basename $(filter-out b~%,$(wildcard *.adb)))
 all: $(EXAMPLES)
 
 $(BUILDDIR)/%: %.adb $(IMPORTDIR) $(wildcard $(SOURCEDIR)/*) | $(BUILDDIR)
-	$(GCCPREFIX)gnatmake$(GCCSUFFIX) -c -I$(SOURCEDIR) $< $(GFLAGS_ALL) $(MFLAGS_ALL) -cargs $(CFLAGS_ALL)
-	cd $(BUILDDIR) && $(GCCPREFIX)gnatbind$(GCCSUFFIX) $(basename $(notdir $<)).ali $(GFLAGS_ALL) $(BFLAGS_ALL)
-	cd $(BUILDDIR) && $(GCCPREFIX)gnatlink$(GCCSUFFIX) -o ../$@ $(basename $(notdir $<)).ali $(GFLAGS_ALL) $(LFLAGS_ALL)
+	$(GCCPREFIX)gnatmake$(GCCSUFFIX) -c -I$(SOURCEDIR) $< $(GFLAGS) $(MFLAGS) -cargs $(CFLAGS)
+	cd $(BUILDDIR) && $(GCCPREFIX)gnatbind$(GCCSUFFIX) $(basename $(notdir $<)).ali $(GFLAGS) $(BFLAGS)
+	cd $(BUILDDIR) && $(GCCPREFIX)gnatlink$(GCCSUFFIX) -o ../$@ $(basename $(notdir $<)).ali $(GFLAGS) $(LFLAGS)
 
 $(BUILDDIR):
 	mkdir $(BUILDDIR)
