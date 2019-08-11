@@ -64,6 +64,7 @@ $(EXAMPLES): %: $(BUILDDIR)/% $(BINLN)
 ifeq ($(IMPORTDIR),$(BUILDDIR)/import)
 $(IMPORTDIR): $(SOURCEDIR)/import.h | $(BUILDDIR)
 	headmaster --to ada $(addprefix -isystem ,$(INCDIR)) $(HFLAGS) -p -D $(IMPORTDIR) $+
+	touch $@
 endif
 
 clean:
