@@ -13,7 +13,7 @@ procedure Test_SHA1 is
 		pragma Assert (D = Value (Image (D)));
 	end Test_01;
 	pragma Debug (Test_01);
-	pragma Debug (Ada.Text_IO.Put_Line ("ok."));
 begin
-	null;
+	-- finish
+	Ada.Text_IO.Put_Line (Ada.Text_IO.Standard_Error.all, "ok");
 end Test_SHA1;
