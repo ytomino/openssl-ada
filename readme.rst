@@ -6,10 +6,12 @@ What's this?
 
 Ada binding to a part of OpenSSL.
 
-Depending tools and libraries
------------------------------
+Prerequisites
+-------------
 
-OpenSSL
+GCC >= 5
+ https://gcc.gnu.org/
+OpenSSL >= 1.0.0
  http://www.openssl.org/
 headmaster
   http://github.com/ytomino/headmaster
