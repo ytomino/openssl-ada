@@ -13,9 +13,7 @@ package Crypto.MD5 is
 	procedure Update (
 		Context : in out MD5.Context;
 		Data : in Ada.Streams.Stream_Element_Array);
-	procedure Update (
-		Context : in out MD5.Context;
-		Data : in String);
+	procedure Update (Context : in out MD5.Context; Data : in String);
 	
 	procedure Final (Context : in out MD5.Context; Digest : out Fingerprint);
 	

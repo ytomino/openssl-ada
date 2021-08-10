@@ -27,10 +27,7 @@ package body Crypto.MD5 is
 		end if;
 	end Update;
 	
-	procedure Update (
-		Context : in out MD5.Context;
-		Data : in String)
-	is
+	procedure Update (Context : in out MD5.Context; Data : in String) is
 		pragma Suppress (Index_Check);
 	begin
 		if C.openssl.md5.MD5_Update (

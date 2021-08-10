@@ -27,10 +27,7 @@ package body Crypto.SHA1 is
 		end if;
 	end Update;
 	
-	procedure Update (
-		Context : in out SHA1.Context;
-		Data : in String)
-	is
+	procedure Update (Context : in out SHA1.Context; Data : in String) is
 		pragma Suppress (Index_Check);
 	begin
 		if C.openssl.sha.SHA1_Update (
