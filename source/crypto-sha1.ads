@@ -1,3 +1,4 @@
+with Ada.IO_Exceptions;
 with Ada.Streams;
 private with C.openssl.sha;
 package Crypto.SHA1 is
@@ -19,6 +20,11 @@ package Crypto.SHA1 is
 	
 	function Value (S : Message_Digest) return Fingerprint;
 	function Image (Digest : Fingerprint) return Message_Digest;
+	
+	-- exceptions
+	
+	Use_Error : exception
+		renames Ada.IO_Exceptions.Use_Error;
 	
 private
 	

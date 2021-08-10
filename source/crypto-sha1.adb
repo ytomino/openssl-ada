@@ -7,7 +7,7 @@ package body Crypto.SHA1 is
 	begin
 		return Result : Context do
 			if C.openssl.sha.SHA1_Init (Result.SHA'Access) = 0 then
-				raise Program_Error;
+				raise Use_Error;
 			end if;
 		end return;
 	end Initial;
@@ -23,7 +23,7 @@ package body Crypto.SHA1 is
 			C.void_const_ptr (Data (Data'First)'Address),
 			Data'Length) = 0
 		then
-			raise Program_Error;
+			raise Use_Error;
 		end if;
 	end Update;
 	
@@ -35,7 +35,7 @@ package body Crypto.SHA1 is
 			C.void_const_ptr (Data (Data'First)'Address),
 			Data'Length) = 0
 		then
-			raise Program_Error;
+			raise Use_Error;
 		end if;
 	end Update;
 	
@@ -47,7 +47,7 @@ package body Crypto.SHA1 is
 			To_Pointer (Digest (Digest'First)'Address),
 			Context.SHA'Access) = 0
 		then
-			raise Program_Error;
+			raise Use_Error;
 		end if;
 	end Final;
 	
