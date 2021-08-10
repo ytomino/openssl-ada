@@ -19,16 +19,37 @@ headmaster
 Usage
 -----
 
-1. Translate the C headers with headmaster. ::
-   
-    $ headmaster --to ada -p -D import-dir openssl-ada/source/import.h
+1. Prepare the translated headers.
+
+   A. Translate the C headers with headmaster. ::
+
+       $ headmaster --to ada -p -D import-dir openssl-ada/source/import.h
+      
+      However, it may not work well in your environment.
+      The plan B is recommended.
+
+   B. Download them from `pre-translated headers page`_.
 
 2. Add the source directories of openssl-ada and the translated headers
    to search path for gnatmake. ::
-   
+
     $ gnatmake -Iopenssl-ada/source -Iimport-dir your_main.adb
    
    Or please write .gpr file for your environment.
+
+Build examples
+--------------
+
+1. Link the translated headers to `examples/import`. ::
+
+    $ mkdir -p examples/import/$(gcc -dumpmachine)
+    $ ln -s import-dir examples/import/$(gcc -dumpmachine)
+   
+   If this step is omitted, headmaster will be used.
+
+2. Build them. ::
+
+    $ make -C examples
 
 License
 -------
@@ -115,3 +136,5 @@ Also, please apply the license of OpenSSL when static linking.
   * Hudson (tjh@cryptsoft.com).
   *
   */
+
+.. _`pre-translated headers page`: https://github.com/ytomino/openssl-ada/wiki/Pre-translated-headers
