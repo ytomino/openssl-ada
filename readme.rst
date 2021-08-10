@@ -11,7 +11,7 @@ Prerequisites
 
 GCC >= 5
  https://gcc.gnu.org/
-OpenSSL >= 1.0.0
+OpenSSL >= 1.0.2
  http://www.openssl.org/
 headmaster
   http://github.com/ytomino/headmaster
