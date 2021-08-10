@@ -19,11 +19,11 @@ headmaster
 Usage
 -----
 
-1. Translate C headers with headmaster. ::
+1. Translate the C headers with headmaster. ::
    
     $ headmaster --to ada -p -D import-dir openssl-ada/source/import.h
 
-2. Add source directories of openssl-ada and translated headers
+2. Add the source directories of openssl-ada and the translated headers
    to search path for gnatmake. ::
    
     $ gnatmake -Iopenssl-ada/source -Iimport-dir your_main.adb
