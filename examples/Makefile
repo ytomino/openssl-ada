@@ -23,6 +23,19 @@ BFLAGS=-E
 LFLAGS=-ggdb
 HFLAGS=
 
+ifeq ($(TARGET),$(HOST))
+WITH_SSL?=
+ifneq ($(WITH_SSL),)
+SSL_LFLAGS=-L$(WITH_SSL)/lib
+SSL_HFLAGS=-I$(WITH_SSL)/include
+else
+SSL_LFLAGS:=$(shell pkg-config --libs-only-L libcrypto)
+SSL_HFLAGS:=$(shell pkg-config --cflags-only-I libcrypto)
+endif
+LFLAGS+=$(SSL_LFLAGS)
+HFLAGS+=$(SSL_HFLAGS)
+endif
+
 ifneq ($(DRAKE_RTSROOT),)
 VERSION:=$(shell $(GCC) -dumpversion)
 DRAKE_RTSDIR=$(DRAKE_RTSROOT)/$(TARGET)/$(VERSION)
