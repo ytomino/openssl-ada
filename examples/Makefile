@@ -98,4 +98,5 @@ $(IMPORTDIR): $(SOURCEDIR)/import.h | $(BUILDDIR)
 endif
 
 clean:
-	-rm -r *.noindex bin
+	-$(if $(BINLN),[ -h "$(BINLN)" ] && rm "$(BINLN)")
+	-rm -r $(BUILDDIR)
